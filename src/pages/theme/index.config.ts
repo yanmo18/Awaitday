@@ -1,7 +1,7 @@
 export default typeof definePageConfig === 'function'
   ? definePageConfig({
-      navigationBarTitleText: '倒计时'
+      navigationBarTitleText: '主题皮肤'
     })
   : {
-      navigationBarTitleText: '倒计时'
+      navigationBarTitleText: '主题皮肤'
     }
