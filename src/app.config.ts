@@ -30,7 +30,7 @@ export default defineAppConfig({
       },
       {
         pagePath: 'pages/theme/index',
-        text: '主题',
+        text: '样式',
         iconPath: './assets/tabbar/palette.png',
         selectedIconPath: './assets/tabbar/palette-active.png'
       }
