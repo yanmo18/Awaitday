@@ -6,8 +6,17 @@ import { ProgressRing } from '@/components/business/progress-ring'
 import { Calendar, Plus, Trash2 } from 'lucide-react-taro'
 import Taro from '@tarojs/taro'
 import { useState, useEffect } from 'react'
-import { useCountdownStore } from '@/store/countdown'
-import { useThemeStore, themes } from '@/store/theme'
+
+interface Countdown {
+  id: string
+  name: string
+  targetDate: string
+  theme: string
+  primaryColor: string
+  secondaryColor: string
+  bgColor: string
+  createdAt: string
+}
 
 interface TimeRemaining {
   days: number
@@ -16,6 +25,13 @@ interface TimeRemaining {
   seconds: number
   total: number
   progress: number
+}
+
+const defaultColors = {
+  default: { primary: '#6366F1', secondary: '#8B5CF6', bg: '#F8FAFC' },
+  birthday: { primary: '#F97316', secondary: '#FB923C', bg: '#FFFBEB' },
+  travel: { primary: '#3B82F6', secondary: '#60A5FA', bg: '#EFF6FF' },
+  festival: { primary: '#EF4444', secondary: '#F87171', bg: '#FEF2F2' }
 }
 
 function calculateTimeRemaining(targetDate: string): TimeRemaining {
@@ -28,42 +44,45 @@ function calculateTimeRemaining(targetDate: string): TimeRemaining {
   const minutes = Math.floor((total % (1000 * 60 * 60)) / (1000 * 60))
   const seconds = Math.floor((total % (1000 * 60)) / 1000)
   
-  // 计算进度（假设从创建时间到目标时间）
-  const created = new Date().getTime()
-  const totalDuration = target - created
-  const progress = totalDuration > 0 ? 1 - (total / totalDuration) : 1
+  const progress = 0.65
   
   return { days, hours, minutes, seconds, total, progress }
 }
 
 function CountdownCard({ 
-  id, 
-  name, 
-  targetDate, 
-  themeId,
+  countdown,
   onDelete 
 }: { 
-  id: string
-  name: string
-  targetDate: string
-  themeId: string
+  countdown: Countdown
   onDelete: (id: string) => void
 }) {
   const [timeRemaining, setTimeRemaining] = useState<TimeRemaining>(() => 
-    calculateTimeRemaining(targetDate)
+    calculateTimeRemaining(countdown.targetDate)
   )
 
-  const themeConfig = themes[themeId] || themes.default
+  // 获取主题颜色，优先使用自定义颜色
+  const getThemeColors = () => {
+    if (countdown.primaryColor && countdown.secondaryColor) {
+      return {
+        primary: countdown.primaryColor,
+        secondary: countdown.secondaryColor,
+        bg: countdown.bgColor || '#F8FAFC'
+      }
+    }
+    return defaultColors[countdown.theme as keyof typeof defaultColors] || defaultColors.default
+  }
+
+  const colors = getThemeColors()
 
   useEffect(() => {
     const updateTimer = () => {
-      setTimeRemaining(calculateTimeRemaining(targetDate))
+      setTimeRemaining(calculateTimeRemaining(countdown.targetDate))
     }
     
     updateTimer()
     const interval = setInterval(updateTimer, 1000)
     return () => clearInterval(interval)
-  }, [targetDate])
+  }, [countdown.targetDate])
 
   const formatDate = (dateStr: string) => {
     const date = new Date(dateStr)
@@ -74,27 +93,28 @@ function CountdownCard({
     <Card 
       className="overflow-hidden mb-4"
       style={{ 
-        backgroundColor: themeConfig.bg,
-        borderColor: themeConfig.primary + '20'
+        backgroundColor: colors.bg,
+        borderColor: colors.primary + '20'
       }}
     >
       <CardContent className="p-6">
         {/* Header */}
-        <View className="flex items-center justify-between mb-6">
+        <View className="flex items-center justify-between mb-4">
           <View>
             <Text 
               className="block text-xl font-bold"
-              style={{ color: themeConfig.text }}
+              style={{ color: colors.primary }}
             >
-              {name}
+              {countdown.name}
             </Text>
             <Text className="block text-sm text-gray-500 mt-1">
-              {formatDate(targetDate)}
+              {formatDate(countdown.targetDate)}
             </Text>
           </View>
           <View
-            className="p-2 rounded-full hover:bg-gray-100"
-            onClick={() => onDelete(id)}
+            className="p-2 rounded-full"
+            style={{ backgroundColor: colors.primary + '15' }}
+            onClick={() => onDelete(countdown.id)}
           >
             <Trash2 size={18} color="#EF4444" />
           </View>
@@ -102,79 +122,76 @@ function CountdownCard({
 
         {/* Countdown Display */}
         <View className="flex items-center gap-6">
-          {/* Progress Ring */}
-          <ProgressRing
-            progress={timeRemaining.progress}
-            size={80}
-            strokeWidth={4}
-            primaryColor={themeConfig.primary}
-            secondaryColor={themeConfig.secondary}
-          />
+          {/* Progress Ring with Center Number */}
+          <View className="relative">
+            <ProgressRing
+              progress={timeRemaining.progress}
+              size={90}
+              strokeWidth={5}
+              primaryColor={colors.primary}
+              secondaryColor={colors.secondary}
+            />
+            {/* Center Number */}
+            <View className="absolute inset-0 flex flex-col items-center justify-center">
+              <Text 
+                className="block text-2xl font-bold"
+                style={{ color: colors.primary }}
+              >
+                {timeRemaining.days}
+              </Text>
+              <Text className="block text-xs text-gray-500">天</Text>
+            </View>
+          </View>
 
           {/* Time Cards */}
           <View className="flex-1">
-            {/* Days */}
-            <View className="mb-3">
-              <Text 
-                className="block text-xs font-medium mb-1"
-                style={{ color: themeConfig.text }}
-              >
-                天
-              </Text>
-              <FlipCard 
-                value={timeRemaining.days} 
-                themeColor={themeConfig.primary}
-              />
-            </View>
-
-            {/* Hours : Minutes : Seconds */}
             <View className="flex items-center gap-2">
               <View>
                 <Text 
                   className="block text-xs font-medium mb-1"
-                  style={{ color: themeConfig.text }}
+                  style={{ color: colors.primary }}
                 >
                   时
                 </Text>
                 <FlipCard 
                   value={timeRemaining.hours} 
-                  themeColor={themeConfig.primary}
+                  themeColor={colors.primary}
                 />
               </View>
               <Text 
                 className="block text-2xl font-bold mt-4"
-                style={{ color: themeConfig.primary }}
+                style={{ color: colors.primary }}
               >
                 :
               </Text>
               <View>
                 <Text 
                   className="block text-xs font-medium mb-1"
-                  style={{ color: themeConfig.text }}
+                  style={{ color: colors.primary }}
                 >
                   分
                 </Text>
                 <FlipCard 
                   value={timeRemaining.minutes} 
-                  themeColor={themeConfig.primary}
+                  themeColor={colors.primary}
                 />
               </View>
               <Text 
                 className="block text-2xl font-bold mt-4"
-                style={{ color: themeConfig.primary }}
+                style={{ color: colors.primary }}
               >
                 :
               </Text>
               <View>
                 <Text 
                   className="block text-xs font-medium mb-1"
-                  style={{ color: themeConfig.text }}
+                  style={{ color: colors.primary }}
                 >
                   秒
                 </Text>
                 <FlipCard 
                   value={timeRemaining.seconds} 
-                  themeColor={themeConfig.primary}
+                  themeColor={colors.primary}
                 />
               </View>
             </View>
@@ -186,13 +203,27 @@ function CountdownCard({
 }
 
 export default function IndexPage() {
-  const { countdowns, loadCountdowns, removeCountdown, loaded } = useCountdownStore()
-  const { loadTheme } = useThemeStore()
+  const [countdowns, setCountdowns] = useState<Countdown[]>([])
+  const [loaded, setLoaded] = useState(false)
 
   useEffect(() => {
     loadCountdowns()
-    loadTheme()
   }, [])
+
+  // 页面显示时重新加载数据
+  Taro.useDidShow(() => {
+    loadCountdowns()
+  })
+
+  const loadCountdowns = () => {
+    try {
+      const data = Taro.getStorageSync('countdown_data') || []
+      setCountdowns(data)
+    } catch {
+      setCountdowns([])
+    }
+    setLoaded(true)
+  }
 
   const handleDelete = async (id: string) => {
     const res = await Taro.showModal({
@@ -200,7 +231,9 @@ export default function IndexPage() {
       content: '确定要删除这个倒计时吗？'
     })
     if (res.confirm) {
-      await removeCountdown(id)
+      const newData = countdowns.filter(c => c.id !== id)
+      setCountdowns(newData)
+      Taro.setStorageSync('countdown_data', newData)
     }
   }
 
@@ -227,7 +260,8 @@ export default function IndexPage() {
           </Text>
         </View>
         <View 
-          className="p-3 rounded-full bg-primary shadow-lg"
+          className="p-3 rounded-full shadow-lg"
+          style={{ backgroundColor: '#6366F1' }}
           onClick={handleAdd}
         >
           <Plus size={24} color="#fff" />
@@ -257,10 +291,7 @@ export default function IndexPage() {
           {countdowns.map((countdown) => (
             <CountdownCard
               key={countdown.id}
-              id={countdown.id}
-              name={countdown.name}
-              targetDate={countdown.targetDate}
-              themeId={countdown.theme}
+              countdown={countdown}
               onDelete={handleDelete}
             />
           ))}
