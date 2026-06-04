@@ -30,33 +30,17 @@ export function FlipCardStyle({
         </View>
       </View>
 
-      {/* 主体：左边色块 + 右边数字 - 左右布局 */}
+      {/* 主体：数字 + "天"字 */}
       <View 
         style={{
           display: 'flex',
           flexDirection: 'row',
           alignItems: 'center',
           justifyContent: 'center',
-          gap: '16px'
+          gap: '12px'
         }}
       >
-        {/* 左侧：彩色方块装饰 */}
-        <View 
-          style={{
-            width: '56px',
-            height: '56px',
-            borderRadius: '12px',
-            backgroundColor: primaryColor,
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            boxShadow: `0 4px 12px ${primaryColor}40`
-          }}
-        >
-          <Text style={{ fontSize: '18px', fontWeight: '500', color: '#FFFFFF' }}>天</Text>
-        </View>
-
-        {/* 右侧：数字组 */}
+        {/* 数字组 */}
         <View style={{ display: 'flex', flexDirection: 'row', alignItems: 'center', gap: '6px' }}>
           {daysStr.split('').map((digit, index) => (
             <View
@@ -69,13 +53,16 @@ export function FlipCardStyle({
                 display: 'flex',
                 alignItems: 'center',
                 justifyContent: 'center',
-                boxShadow: '0 2px 4px rgba(0,0,0,0.1)'
+                boxShadow: '0 2px 8px rgba(0,0,0,0.15)'
               }}
             >
               <Text style={{ fontSize: '32px', fontWeight: 'bold', color: '#FFFFFF' }}>{digit}</Text>
             </View>
           ))}
         </View>
+        
+        {/* "天"字 - 无色块 */}
+        <Text style={{ fontSize: '20px', fontWeight: '600', color: '#64748B' }}>天</Text>
       </View>
 
       {/* 底部：时分秒 */}
