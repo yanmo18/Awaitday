@@ -7,7 +7,7 @@ export default defineAppConfig({
   window: {
     backgroundTextStyle: 'light',
     navigationBarBackgroundColor: '#fff',
-    navigationBarTitleText: '倒计时',
+    navigationBarTitleText: 'Awaitday',
     navigationBarTextStyle: 'black'
   },
   tabBar: {

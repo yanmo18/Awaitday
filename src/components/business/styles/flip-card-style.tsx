@@ -1,5 +1,4 @@
 import { View, Text } from '@tarojs/components'
-import './flip-card.css'
 
 interface FlipCardStyleProps {
   days: number
@@ -19,44 +18,72 @@ export function FlipCardStyle({
     return `${date.getMonth() + 1}月${date.getDate()}日`
   }
 
+  const daysStr = days.toString().padStart(2, '0')
+
   return (
-    <View className="p-4 rounded-2xl" style={{ backgroundColor: primaryColor + '08' }}>
-      {/* Header */}
+    <View className="p-4 rounded-2xl" style={{ backgroundColor: '#F8FAFC' }}>
+      {/* 标题行 */}
       <View className="flex items-center justify-between mb-4">
         <View>
-          <Text className="block text-lg font-bold" style={{ color: primaryColor }}>{name}</Text>
+          <Text className="block text-lg font-bold text-slate-800">{name}</Text>
           <Text className="block text-xs text-gray-500 mt-1">{formatDate(targetDate)}</Text>
         </View>
       </View>
 
-      {/* Days - Large */}
-      <View className="flex items-center justify-center mb-3">
-        <View className="text-center">
-          <FlipDigit value={Math.floor(days / 10)} color={primaryColor} />
-          <FlipDigit value={days % 10} color={primaryColor} />
-          <Text className="block text-xs text-gray-500 mt-1">天</Text>
+      {/* 主体：数字 + "天"字 */}
+      <View 
+        style={{
+          display: 'flex',
+          flexDirection: 'row',
+          alignItems: 'center',
+          justifyContent: 'center',
+          gap: '12px'
+        }}
+      >
+        {/* 数字组 */}
+        <View style={{ display: 'flex', flexDirection: 'row', alignItems: 'center', gap: '6px' }}>
+          {daysStr.split('').map((digit, index) => (
+            <View
+              key={index}
+              style={{
+                width: '48px',
+                height: '56px',
+                borderRadius: '10px',
+                backgroundColor: primaryColor,
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                boxShadow: '0 2px 8px rgba(0,0,0,0.15)'
+              }}
+            >
+              <Text style={{ fontSize: '32px', fontWeight: 'bold', color: '#FFFFFF' }}>{digit}</Text>
+            </View>
+          ))}
         </View>
+        
+        {/* "天"字 - 无色块 */}
+        <Text style={{ fontSize: '20px', fontWeight: '600', color: '#64748B' }}>天</Text>
       </View>
 
-      {/* Hours : Minutes : Seconds */}
-      <View className="flex items-center justify-center gap-2">
+      {/* 底部：时分秒 */}
+      <View 
+        style={{
+          display: 'flex',
+          flexDirection: 'row',
+          alignItems: 'center',
+          justifyContent: 'center',
+          gap: '8px',
+          marginTop: '16px',
+          paddingTop: '16px',
+          borderTop: '1px solid #E2E8F0'
+        }}
+      >
         <TimeUnit value={hours} label="时" color={primaryColor} />
-        <Text className="text-xl font-bold" style={{ color: primaryColor }}>:</Text>
+        <Text style={{ fontSize: '16px', fontWeight: 'bold', color: primaryColor }}>:</Text>
         <TimeUnit value={minutes} label="分" color={primaryColor} />
-        <Text className="text-xl font-bold" style={{ color: primaryColor }}>:</Text>
+        <Text style={{ fontSize: '16px', fontWeight: 'bold', color: primaryColor }}>:</Text>
         <TimeUnit value={seconds} label="秒" color={primaryColor} />
       </View>
-    </View>
-  )
-}
-
-function FlipDigit({ value, color }: { value: number; color: string }) {
-  return (
-    <View 
-      className="flip-card-single"
-      style={{ backgroundColor: color }}
-    >
-      <Text className="text-3xl font-bold text-white">{value}</Text>
     </View>
   )
 }
@@ -64,19 +91,26 @@ function FlipDigit({ value, color }: { value: number; color: string }) {
 function TimeUnit({ value, label, color }: { value: number; label: string; color: string }) {
   const str = value.toString().padStart(2, '0')
   return (
-    <View className="text-center">
-      <View className="flex gap-0.5">
+    <View style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+      <View style={{ display: 'flex', flexDirection: 'row', gap: '2px' }}>
         {str.split('').map((d, i) => (
           <View 
             key={i}
-            className="w-6 h-8 rounded flex items-center justify-center"
-            style={{ backgroundColor: color }}
+            style={{
+              width: '20px',
+              height: '28px',
+              borderRadius: '4px',
+              backgroundColor: color,
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center'
+            }}
           >
-            <Text className="text-base font-bold text-white">{d}</Text>
+            <Text style={{ fontSize: '14px', fontWeight: 'bold', color: '#FFFFFF' }}>{d}</Text>
           </View>
         ))}
       </View>
-      <Text className="block text-xs text-gray-500 mt-1">{label}</Text>
+      <Text style={{ fontSize: '10px', color: '#64748B', marginTop: '4px' }}>{label}</Text>
     </View>
   )
 }

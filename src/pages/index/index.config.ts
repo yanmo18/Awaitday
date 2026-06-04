@@ -1,7 +1,7 @@
 export default typeof definePageConfig === 'function'
   ? definePageConfig({
-      navigationBarTitleText: '倒计时'
+      navigationBarTitleText: 'Awaitday'
     })
   : {
-      navigationBarTitleText: '倒计时'
+      navigationBarTitleText: 'Awaitday'
     }

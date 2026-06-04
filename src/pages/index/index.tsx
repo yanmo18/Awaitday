@@ -142,15 +142,15 @@ function CountdownCard({
 
   return (
     <View className="mb-4 relative">
-      {/* Delete Button */}
+      {renderCountdown()}
+      
+      {/* Delete Button - 右下角 */}
       <View
-        className="absolute top-2 right-2 z-10 p-2 rounded-full bg-white bg-opacity-80 shadow-sm"
+        className="absolute bottom-2 right-2 z-10 p-2 rounded-full bg-white bg-opacity-90 shadow-sm"
         onClick={() => onDelete(countdown.id)}
       >
         <Trash2 size={16} color="#EF4444" />
       </View>
-      
-      {renderCountdown()}
     </View>
   )
 }
@@ -209,14 +209,19 @@ export default function IndexPage() {
       {/* Header */}
       <View className="flex items-center justify-between mb-6">
         <View>
-          <Text className="block text-2xl font-bold text-gray-800">我的倒计时</Text>
+          <Text className="block text-2xl font-bold text-gray-800">Awaitday</Text>
           <Text className="block text-sm text-gray-500 mt-1">
             记录每一个重要时刻
           </Text>
         </View>
         <View 
-          className="p-3 rounded-full shadow-lg"
-          style={{ backgroundColor: '#6366F1' }}
+          className="flex items-center justify-center shadow-lg"
+          style={{ 
+            width: '48px', 
+            height: '48px', 
+            borderRadius: '24px',
+            backgroundColor: '#6366F1' 
+          }}
           onClick={handleAdd}
         >
           <Plus size={24} color="#fff" />
