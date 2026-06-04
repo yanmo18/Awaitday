@@ -1,4 +1,4 @@
-import { View, Text } from '@tarojs/components'
+import { View, Text, Picker } from '@tarojs/components'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
@@ -19,6 +19,11 @@ interface ThemeOption {
 export default function AddPage() {
   const [name, setName] = useState('')
   const [selectedDate, setSelectedDate] = useState<Date | undefined>(new Date())
+  const [pickerDate, setPickerDate] = useState<string>(() => {
+    const today = new Date()
+    return `${today.getFullYear()}-${String(today.getMonth() + 1).padStart(2, '0')}-${String(today.getDate()).padStart(2, '0')}`
+  })
+  const [showPicker, setShowPicker] = useState(false)
   const [selectedTheme, setSelectedTheme] = useState('default')
   const [customPrimary, setCustomPrimary] = useState('#6366F1')
   const [customSecondary, setCustomSecondary] = useState('#8B5CF6')
@@ -48,6 +53,22 @@ export default function AddPage() {
       }
     }
     return presetThemes.find(t => t.id === selectedTheme) || presetThemes[0]
+  }
+
+  // Picker 日期变化处理
+  const handlePickerChange = (e: { detail: { value: string } }) => {
+    const dateStr = e.detail.value
+    setPickerDate(dateStr)
+    const [year, month, day] = dateStr.split('-').map(Number)
+    setSelectedDate(new Date(year, month - 1, day))
+  }
+
+  // 同步 Calendar 选择的日期到 Picker
+  const handleCalendarSelect = (date: Date | undefined) => {
+    setSelectedDate(date)
+    if (date) {
+      setPickerDate(`${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getDate()).padStart(2, '0')}`)
+    }
   }
 
   const handleSave = async () => {
@@ -117,16 +138,34 @@ export default function AddPage() {
           </CardContent>
         </Card>
 
-        {/* Date Picker */}
+        {/* Date Picker - 使用 Picker 原生组件实现快捷日期选择 */}
         <Card>
           <CardHeader className="pb-2">
             <CardTitle className="text-base">目标日期</CardTitle>
           </CardHeader>
           <CardContent>
+            {/* Picker 快捷日期选择 */}
+            <View 
+              className="flex items-center justify-between p-3 bg-gray-50 rounded-lg mb-3"
+              onClick={() => setShowPicker(true)}
+            >
+              <Text className="text-sm text-gray-600">快捷选择</Text>
+              <View className="flex items-center gap-2">
+                <Text className="text-base font-medium text-gray-800">{pickerDate}</Text>
+                <Text className="text-gray-400">›</Text>
+              </View>
+            </View>
+            {showPicker && (
+              <Picker mode="date" value={pickerDate} onChange={handlePickerChange} start="2024-01-01" end="2030-12-31">
+                <View className="hidden" />
+              </Picker>
+            )}
+            
+            {/* Calendar 详细选择 */}
             <Calendar
               mode="single"
               selected={selectedDate}
-              onSelect={setSelectedDate}
+              onSelect={handleCalendarSelect}
               className="rounded-lg border"
             />
           </CardContent>

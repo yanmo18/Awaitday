@@ -1,4 +1,4 @@
-import { View, Text } from '@tarojs/components'
+import { View, Text, ScrollView } from '@tarojs/components'
 import { Card, CardContent } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Calendar, Plus, Trash2 } from 'lucide-react-taro'
@@ -228,36 +228,42 @@ export default function IndexPage() {
         </View>
       </View>
 
-      {/* Countdown List */}
-      {countdowns.length === 0 ? (
-        <Card className="mt-20">
-          <CardContent className="p-12 flex flex-col items-center">
-            <View className="w-20 h-20 rounded-full bg-gray-100 flex items-center justify-center mb-4">
-              <Calendar size={40} color="#9CA3AF" />
-            </View>
-            <Text className="block text-lg font-medium text-gray-700 mb-2">
-              还没有倒计时
-            </Text>
-            <Text className="block text-sm text-gray-500 mb-6">
-              点击右上角 + 添加你的第一个倒计时
-            </Text>
-            <Button onClick={handleAdd}>
-              <Text className="text-white">添加倒计时</Text>
-            </Button>
-          </CardContent>
-        </Card>
-      ) : (
-        <View>
-          {countdowns.map((countdown) => (
-            <CountdownCard
-              key={countdown.id}
-              countdown={countdown}
-              globalStyle={globalStyle}
-              onDelete={handleDelete}
-            />
-          ))}
-        </View>
-      )}
+      {/* Countdown List - 使用 ScrollView 原生组件实现列表滚动 */}
+      <ScrollView 
+        scroll-y 
+        className="flex-1"
+        style={{ height: 'calc(100vh - 120px)' }}
+      >
+        {countdowns.length === 0 ? (
+          <Card className="mt-20">
+            <CardContent className="p-12 flex flex-col items-center">
+              <View className="w-20 h-20 rounded-full bg-gray-100 flex items-center justify-center mb-4">
+                <Calendar size={40} color="#9CA3AF" />
+              </View>
+              <Text className="block text-lg font-medium text-gray-700 mb-2">
+                还没有倒计时
+              </Text>
+              <Text className="block text-sm text-gray-500 mb-6">
+                点击右上角 + 添加你的第一个倒计时
+              </Text>
+              <Button onClick={handleAdd}>
+                <Text className="text-white">添加倒计时</Text>
+              </Button>
+            </CardContent>
+          </Card>
+        ) : (
+          <View>
+            {countdowns.map((countdown) => (
+              <CountdownCard
+                key={countdown.id}
+                countdown={countdown}
+                globalStyle={globalStyle}
+                onDelete={handleDelete}
+              />
+            ))}
+          </View>
+        )}
+      </ScrollView>
     </View>
   )
 }

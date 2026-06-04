@@ -1,11 +1,12 @@
-import { View, Text } from '@tarojs/components'
+import { View, Text, Swiper, SwiperItem } from '@tarojs/components'
 import { Card, CardContent } from '@/components/ui/card'
-import { Check } from 'lucide-react-taro'
+import { Check, ChevronLeft, ChevronRight } from 'lucide-react-taro'
 import Taro from '@tarojs/taro'
 import { useState, useEffect } from 'react'
 
 export default function StylePage() {
   const [currentStyle, setCurrentStyle] = useState('ring')
+  const [swiperCurrent, setSwiperCurrent] = useState(0)
 
   const styles = [
     { id: 'ring', name: '圆环进度', description: '优雅的圆环进度条，中心显示天数' },
@@ -16,7 +17,11 @@ export default function StylePage() {
 
   useEffect(() => {
     const saved = Taro.getStorageSync('countdown_style')
-    if (saved) setCurrentStyle(saved)
+    if (saved) {
+      setCurrentStyle(saved)
+      const index = styles.findIndex(s => s.id === saved)
+      if (index >= 0) setSwiperCurrent(index)
+    }
   }, [])
 
   const handleSelectStyle = (styleId: string) => {
@@ -25,11 +30,15 @@ export default function StylePage() {
     Taro.showToast({ title: '样式已应用', icon: 'success' })
   }
 
+  const handleSwiperChange = (e: { detail: { current: number } }) => {
+    setSwiperCurrent(e.detail.current)
+  }
+
   // 预览组件
   const PreviewRing = () => (
-    <View style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', height: '120px' }}>
-      <View style={{ position: 'relative', width: '80px', height: '80px' }}>
-        <svg width="80" height="80" viewBox="0 0 100 100" style={{ transform: 'rotate(-90deg)' }}>
+    <View style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', height: '140px' }}>
+      <View style={{ position: 'relative', width: '100px', height: '100px' }}>
+        <svg width="100" height="100" viewBox="0 0 100 100" style={{ transform: 'rotate(-90deg)' }}>
           <circle cx="50" cy="50" r="42" fill="none" stroke="#E2E8F0" strokeWidth="8" />
           <circle cx="50" cy="50" r="42" fill="none" stroke="url(#ringGrad)" strokeWidth="8" strokeDasharray="198" strokeLinecap="round" />
           <defs>
@@ -40,32 +49,32 @@ export default function StylePage() {
           </defs>
         </svg>
         <View style={{ position: 'absolute', top: 0, left: 0, right: 0, bottom: 0, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-          <Text style={{ fontSize: '24px', fontWeight: 'bold', color: '#6366F1' }}>07</Text>
+          <Text style={{ fontSize: '28px', fontWeight: 'bold', color: '#6366F1' }}>07</Text>
         </View>
       </View>
     </View>
   )
 
   const PreviewFlip = () => (
-    <View style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', height: '120px', gap: '4px' }}>
+    <View style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', height: '140px', gap: '6px' }}>
       {['0', '7'].map((digit, i) => (
         <View
           key={i}
           style={{
-            width: '28px',
-            height: '40px',
+            width: '36px',
+            height: '50px',
             backgroundColor: '#1E293B',
-            borderRadius: '4px',
+            borderRadius: '6px',
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'center',
-            boxShadow: '0 2px 4px rgba(0,0,0,0.2)'
+            boxShadow: '0 4px 8px rgba(0,0,0,0.2)'
           }}
         >
-          <Text style={{ fontSize: '20px', fontWeight: 'bold', color: '#F8FAFC' }}>{digit}</Text>
+          <Text style={{ fontSize: '26px', fontWeight: 'bold', color: '#F8FAFC' }}>{digit}</Text>
         </View>
       ))}
-      <Text style={{ fontSize: '20px', color: '#64748B', margin: '0 2px' }}>天</Text>
+      <Text style={{ fontSize: '22px', color: '#64748B', marginLeft: '4px' }}>天</Text>
     </View>
   )
 
@@ -75,21 +84,21 @@ export default function StylePage() {
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'center',
-        height: '120px',
+        height: '140px',
         background: 'linear-gradient(135deg, #6366F1 0%, #8B5CF6 50%, #EC4899 100%)',
         borderRadius: '16px',
         margin: '8px'
       }}
     >
-      <Text style={{ fontSize: '48px', fontWeight: 'bold', color: '#FFFFFF' }}>07</Text>
-      <Text style={{ fontSize: '16px', color: 'rgba(255,255,255,0.8)', marginLeft: '8px' }}>天</Text>
+      <Text style={{ fontSize: '56px', fontWeight: 'bold', color: '#FFFFFF' }}>07</Text>
+      <Text style={{ fontSize: '18px', color: 'rgba(255,255,255,0.8)', marginLeft: '8px' }}>天</Text>
     </View>
   )
 
   const PreviewMinimal = () => (
-    <View style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', height: '120px' }}>
-      <Text style={{ fontSize: '56px', fontWeight: '200', color: '#1E293B', letterSpacing: '-2px' }}>07</Text>
-      <Text style={{ fontSize: '14px', color: '#64748B', marginLeft: '8px', fontWeight: '500' }}>天</Text>
+    <View style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', height: '140px' }}>
+      <Text style={{ fontSize: '64px', fontWeight: '200', color: '#1E293B', letterSpacing: '-2px' }}>07</Text>
+      <Text style={{ fontSize: '16px', color: '#64748B', marginLeft: '8px', fontWeight: '500' }}>天</Text>
     </View>
   )
 
@@ -107,36 +116,86 @@ export default function StylePage() {
     <View className="min-h-screen bg-slate-50 p-4">
       <Text className="block text-lg font-semibold text-slate-800 mb-4">选择倒计时样式</Text>
       
-      {styles.map((style) => (
-        <Card
-          key={style.id}
-          className={`mb-4 overflow-hidden ${currentStyle === style.id ? 'ring-2 ring-indigo-500' : ''}`}
-          onClick={() => handleSelectStyle(style.id)}
+      {/* 使用 Swiper 原生组件实现样式左右滑动切换 */}
+      <View className="bg-white rounded-xl overflow-hidden shadow-sm mb-4">
+        <Swiper
+          className="h-44"
+          indicatorDots={false}
+          autoplay={false}
+          current={swiperCurrent}
+          onChange={handleSwiperChange}
+          circular
         >
-          <CardContent className="p-0">
-            {/* 预览区域 */}
-            <View className="bg-white">
-              {renderPreview(style.id)}
-            </View>
-            {/* 信息区域 */}
-            <View className="flex items-center justify-between p-4 bg-slate-50 border-t border-slate-100">
-              <View>
-                <Text className="block text-base font-medium text-slate-800">{style.name}</Text>
-                <Text className="block text-sm text-slate-500 mt-1">{style.description}</Text>
+          {styles.map((style) => (
+            <SwiperItem key={style.id}>
+              <View className="h-full bg-white">
+                {renderPreview(style.id)}
               </View>
-              {currentStyle === style.id && (
-                <View className="w-6 h-6 bg-indigo-500 rounded-full flex items-center justify-center">
-                  <Check size={16} color="#FFFFFF" />
-                </View>
-              )}
+            </SwiperItem>
+          ))}
+        </Swiper>
+        
+        {/* 导航指示器 */}
+        <View className="flex items-center justify-between px-4 py-3 bg-slate-50 border-t border-slate-100">
+          <View 
+            className="p-1"
+            onClick={() => {
+              const newIndex = swiperCurrent > 0 ? swiperCurrent - 1 : styles.length - 1
+              setSwiperCurrent(newIndex)
+            }}
+          >
+            <ChevronLeft size={20} color="#64748B" />
+          </View>
+          
+          <View className="flex items-center gap-2">
+            {styles.map((style, index) => (
+              <View
+                key={style.id}
+                className={`h-2 rounded-full transition-all ${index === swiperCurrent ? 'w-6 bg-indigo-500' : 'w-2 bg-slate-300'}`}
+              />
+            ))}
+          </View>
+          
+          <View 
+            className="p-1"
+            onClick={() => {
+              const newIndex = swiperCurrent < styles.length - 1 ? swiperCurrent + 1 : 0
+              setSwiperCurrent(newIndex)
+            }}
+          >
+            <ChevronRight size={20} color="#64748B" />
+          </View>
+        </View>
+      </View>
+
+      {/* 当前样式信息 */}
+      <Card className={`mb-4 overflow-hidden ${currentStyle === styles[swiperCurrent].id ? 'ring-2 ring-indigo-500' : ''}`}>
+        <CardContent className="p-4">
+          <View className="flex items-center justify-between">
+            <View>
+              <Text className="block text-base font-medium text-slate-800">{styles[swiperCurrent].name}</Text>
+              <Text className="block text-sm text-slate-500 mt-1">{styles[swiperCurrent].description}</Text>
             </View>
-          </CardContent>
-        </Card>
-      ))}
+            {currentStyle === styles[swiperCurrent].id && (
+              <View className="w-6 h-6 bg-indigo-500 rounded-full flex items-center justify-center">
+                <Check size={16} color="#FFFFFF" />
+              </View>
+            )}
+          </View>
+        </CardContent>
+      </Card>
+
+      {/* 应用按钮 */}
+      <View 
+        className="bg-indigo-500 rounded-xl py-4 flex items-center justify-center active:bg-indigo-600"
+        onClick={() => handleSelectStyle(styles[swiperCurrent].id)}
+      >
+        <Text className="text-white font-medium">应用此样式</Text>
+      </View>
 
       <View className="mt-6 p-4 bg-indigo-50 rounded-xl">
         <Text className="block text-sm text-indigo-600 font-medium mb-2">提示</Text>
-        <Text className="block text-sm text-slate-600">选择样式后，所有倒计时都会使用该样式展示。颜色可在添加倒计时时自定义。</Text>
+        <Text className="block text-sm text-slate-600">左右滑动预览不同样式，点击「应用此样式」保存设置。颜色可在添加倒计时时自定义。</Text>
       </View>
     </View>
   )
