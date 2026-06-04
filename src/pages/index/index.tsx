@@ -209,14 +209,19 @@ export default function IndexPage() {
       {/* Header */}
       <View className="flex items-center justify-between mb-6">
         <View>
-          <Text className="block text-2xl font-bold text-gray-800">我的倒计时</Text>
+          <Text className="block text-2xl font-bold text-gray-800">Awaitday</Text>
           <Text className="block text-sm text-gray-500 mt-1">
             记录每一个重要时刻
           </Text>
         </View>
         <View 
-          className="p-3 rounded-full shadow-lg"
-          style={{ backgroundColor: '#6366F1' }}
+          className="flex items-center justify-center shadow-lg"
+          style={{ 
+            width: '48px', 
+            height: '48px', 
+            borderRadius: '24px',
+            backgroundColor: '#6366F1' 
+          }}
           onClick={handleAdd}
         >
           <Plus size={24} color="#fff" />
