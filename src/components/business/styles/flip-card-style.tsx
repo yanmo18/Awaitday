@@ -43,9 +43,9 @@ export function FlipCardStyle({
         {/* 左侧：彩色方块装饰 */}
         <View 
           style={{
-            width: '80px',
-            height: '80px',
-            borderRadius: '16px',
+            width: '56px',
+            height: '56px',
+            borderRadius: '12px',
             backgroundColor: primaryColor,
             display: 'flex',
             alignItems: 'center',
@@ -53,18 +53,18 @@ export function FlipCardStyle({
             boxShadow: `0 4px 12px ${primaryColor}40`
           }}
         >
-          <Text style={{ fontSize: '32px', fontWeight: 'bold', color: '#FFFFFF' }}>天</Text>
+          <Text style={{ fontSize: '18px', fontWeight: '500', color: '#FFFFFF' }}>天</Text>
         </View>
 
         {/* 右侧：数字组 */}
-        <View style={{ display: 'flex', flexDirection: 'row', alignItems: 'center', gap: '4px' }}>
+        <View style={{ display: 'flex', flexDirection: 'row', alignItems: 'center', gap: '6px' }}>
           {daysStr.split('').map((digit, index) => (
             <View
               key={index}
               style={{
-                width: '40px',
+                width: '48px',
                 height: '56px',
-                borderRadius: '8px',
+                borderRadius: '10px',
                 backgroundColor: primaryColor,
                 display: 'flex',
                 alignItems: 'center',
@@ -72,7 +72,7 @@ export function FlipCardStyle({
                 boxShadow: '0 2px 4px rgba(0,0,0,0.1)'
               }}
             >
-              <Text style={{ fontSize: '28px', fontWeight: 'bold', color: '#FFFFFF' }}>{digit}</Text>
+              <Text style={{ fontSize: '32px', fontWeight: 'bold', color: '#FFFFFF' }}>{digit}</Text>
             </View>
           ))}
         </View>
