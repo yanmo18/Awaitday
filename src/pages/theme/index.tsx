@@ -29,16 +29,48 @@ export default function StylePage() {
   const PreviewRing = () => (
     <View style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', height: '120px' }}>
       <View style={{ position: 'relative', width: '80px', height: '80px' }}>
-        <svg width="80" height="80" viewBox="0 0 100 100" style={{ transform: 'rotate(-90deg)' }}>
-          <circle cx="50" cy="50" r="42" fill="none" stroke="#E2E8F0" strokeWidth="8" />
-          <circle cx="50" cy="50" r="42" fill="none" stroke="url(#ringGrad)" strokeWidth="8" strokeDasharray="198" strokeLinecap="round" />
-          <defs>
-            <linearGradient id="ringGrad" x1="0%" y1="0%" x2="100%" y2="100%">
-              <stop offset="0%" stopColor="#6366F1" />
-              <stop offset="100%" stopColor="#8B5CF6" />
-            </linearGradient>
-          </defs>
-        </svg>
+        {/* 背景圆环 */}
+        <View 
+          style={{ 
+            position: 'absolute',
+            inset: 0,
+            borderRadius: '50%',
+            borderWidth: '8px',
+            borderStyle: 'solid',
+            borderColor: '#E2E8F0'
+          }}
+        />
+        {/* 进度圆环 */}
+        <View 
+          style={{ 
+            position: 'absolute',
+            inset: 0,
+            borderRadius: '50%',
+            overflow: 'hidden',
+            transform: 'rotate(-90deg)'
+          }}
+        >
+          <View 
+            style={{
+              position: 'absolute',
+              inset: 0,
+              background: 'conic-gradient(#6366F1 0deg, #8B5CF6 234deg, transparent 234deg)'
+            }}
+          >
+            <View 
+              style={{ 
+                position: 'absolute',
+                top: '8px',
+                left: '8px',
+                right: '8px',
+                bottom: '8px',
+                borderRadius: '50%',
+                backgroundColor: '#fff'
+              }}
+            />
+          </View>
+        </View>
+        {/* 中心文字 */}
         <View style={{ position: 'absolute', top: 0, left: 0, right: 0, bottom: 0, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
           <Text style={{ fontSize: '24px', fontWeight: 'bold', color: '#6366F1' }}>07</Text>
         </View>

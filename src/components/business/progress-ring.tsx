@@ -26,48 +26,44 @@ export function ProgressRing({
     return () => clearTimeout(timer)
   }, [progress])
 
-  const radius = (size - strokeWidth) / 2
-  const circumference = 2 * Math.PI * radius
-  const strokeDashoffset = circumference * (1 - animatedProgress)
+  const progressDeg = animatedProgress * 360
+  const innerSize = size - strokeWidth * 2
 
   return (
-    <View className="progress-ring-container" style={{ width: size, height: size }}>
-      <svg width={size} height={size} viewBox={`0 0 ${size} ${size}`}>
-        <defs>
-          <linearGradient id="progressGradient" x1="0%" y1="0%" x2="100%" y2="0%">
-            <stop offset="0%" stopColor={primaryColor} />
-            <stop offset="100%" stopColor={secondaryColor} />
-          </linearGradient>
-        </defs>
-        
-        {/* 背景圆环 */}
-        <circle
-          cx={size / 2}
-          cy={size / 2}
-          r={radius}
-          fill="none"
-          stroke="#E5E7EB"
-          strokeWidth={strokeWidth}
-        />
-        
-        {/* 进度圆环 */}
-        <circle
-          cx={size / 2}
-          cy={size / 2}
-          r={radius}
-          fill="none"
-          stroke="url(#progressGradient)"
-          strokeWidth={strokeWidth}
-          strokeLinecap="round"
-          strokeDasharray={circumference}
-          strokeDashoffset={strokeDashoffset}
+    <View className="progress-ring-container relative" style={{ width: size, height: size }}>
+      {/* 背景圆环 */}
+      <View 
+        className="absolute inset-0 rounded-full"
+        style={{ 
+          borderWidth: strokeWidth,
+          borderStyle: 'solid',
+          borderColor: '#E5E7EB'
+        }}
+      />
+      
+      {/* 进度圆环 - 使用 conic-gradient */}
+      <View 
+        className="absolute inset-0 rounded-full overflow-hidden"
+        style={{ transform: 'rotate(-90deg)' }}
+      >
+        <View 
+          className="absolute inset-0"
           style={{
-            transform: 'rotate(-90deg)',
-            transformOrigin: '50% 50%',
-            transition: 'stroke-dashoffset 1s ease-out'
+            background: `conic-gradient(${primaryColor} 0deg, ${secondaryColor} ${progressDeg}deg, transparent ${progressDeg}deg)`,
           }}
-        />
-      </svg>
+        >
+          <View 
+            className="absolute rounded-full"
+            style={{ 
+              width: innerSize,
+              height: innerSize,
+              top: strokeWidth,
+              left: strokeWidth,
+              backgroundColor: '#fff'
+            }}
+          />
+        </View>
+      </View>
     </View>
   )
 }
