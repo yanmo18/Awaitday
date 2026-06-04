@@ -57,7 +57,7 @@ export function RingStyle({
             <View 
               className="absolute inset-0"
               style={{
-                background: `conic-gradient(${primaryColor} 0deg, ${secondaryColor} ${progressDeg}deg, transparent ${progressDeg}deg)`,
+                background: `conic-gradient(from 0deg, ${primaryColor}, ${secondaryColor} ${progressDeg}deg, transparent ${progressDeg}deg)`
               }}
             >
               <View 
