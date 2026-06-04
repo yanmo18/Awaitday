@@ -28,8 +28,9 @@ export function RingStyle({
     return `${date.getMonth() + 1}月${date.getDate()}日`
   }
 
-  const progressDeg = animatedProgress * 360
-  const isLargeProgress = animatedProgress > 0.5
+  const radius = 50
+  const circumference = 2 * Math.PI * radius
+  const strokeDashoffset = circumference * (1 - animatedProgress)
 
   return (
     <View className="p-4 rounded-2xl" style={{ backgroundColor: primaryColor + '08' }}>
@@ -43,29 +44,31 @@ export function RingStyle({
 
       {/* Ring + Time */}
       <View className="flex items-center justify-between">
-        {/* Ring - 使用 View 替代 SVG */}
-        <View className="relative" style={{ width: '120px', height: '120px' }}>
-          <View 
-            className="absolute inset-0 rounded-full border-8"
-            style={{ borderColor: '#E5E7EB' }}
-          />
-          {/* 圆环进度 */}
-          <View 
-            className="absolute inset-0 rounded-full overflow-hidden"
-            style={{ transform: 'rotate(-90deg)' }}
-          >
-            <View 
-              className="absolute inset-0"
+        {/* Ring */}
+        <View className="relative">
+          <svg width="120" height="120" viewBox="0 0 120 120">
+            <defs>
+              <linearGradient id={`ring-grad-${primaryColor}`} x1="0%" y1="0%" x2="100%" y2="0%">
+                <stop offset="0%" stopColor={primaryColor} />
+                <stop offset="100%" stopColor={secondaryColor} />
+              </linearGradient>
+            </defs>
+            <circle cx="60" cy="60" r={radius} fill="none" stroke="#E5E7EB" strokeWidth="8" />
+            <circle
+              cx="60" cy="60" r={radius}
+              fill="none"
+              stroke={`url(#ring-grad-${primaryColor})`}
+              strokeWidth="8"
+              strokeLinecap="round"
+              strokeDasharray={circumference}
+              strokeDashoffset={strokeDashoffset}
               style={{
-                background: `conic-gradient(from 0deg, ${primaryColor}, ${secondaryColor} ${progressDeg}deg, transparent ${progressDeg}deg)`
+                transform: 'rotate(-90deg)',
+                transformOrigin: '50% 50%',
+                transition: 'stroke-dashoffset 1s ease-out'
               }}
-            >
-              <View 
-                className="absolute inset-0 rounded-full m-1.5"
-                style={{ backgroundColor: primaryColor + '08' }}
-              />
-            </View>
-          </View>
+            />
+          </svg>
           {/* Center */}
           <View className="absolute inset-0 flex flex-col items-center justify-center">
             <Text className="text-3xl font-bold" style={{ color: primaryColor }}>{days}</Text>
