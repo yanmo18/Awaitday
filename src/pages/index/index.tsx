@@ -142,15 +142,15 @@ function CountdownCard({
 
   return (
     <View className="mb-4 relative">
-      {/* Delete Button */}
+      {renderCountdown()}
+      
+      {/* Delete Button - 右下角 */}
       <View
-        className="absolute top-2 right-2 z-10 p-2 rounded-full bg-white bg-opacity-80 shadow-sm"
+        className="absolute bottom-2 right-2 z-10 p-2 rounded-full bg-white bg-opacity-90 shadow-sm"
         onClick={() => onDelete(countdown.id)}
       >
         <Trash2 size={16} color="#EF4444" />
       </View>
-      
-      {renderCountdown()}
     </View>
   )
 }
