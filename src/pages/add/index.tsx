@@ -280,6 +280,8 @@ export default function AddPage() {
                 {/* 内部白色圆 */}
                 <View style={{ 
                   position: 'absolute', 
+                  left: 4, 
+                  top: 4, 
                   width: 52, 
                   height: 52, 
                   borderRadius: 26, 

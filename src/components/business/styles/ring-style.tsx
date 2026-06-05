@@ -77,6 +77,8 @@ export function RingStyle({
           <View 
             style={{
               position: 'absolute',
+              left: strokeWidth,
+              top: strokeWidth,
               width: size - strokeWidth * 2,
               height: size - strokeWidth * 2,
               borderRadius: (size - strokeWidth * 2) / 2,
