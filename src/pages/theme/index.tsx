@@ -124,7 +124,6 @@ export default function StylePage() {
           autoplay={false}
           current={swiperCurrent}
           onChange={handleSwiperChange}
-          circular
         >
           {styles.map((style) => (
             <SwiperItem key={style.id}>
