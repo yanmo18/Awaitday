@@ -265,23 +265,23 @@ export default function AddPage() {
           <CardContent className="p-4">
             <Text className="block text-sm text-gray-500 mb-3">效果预览</Text>
             <View className="flex items-center gap-4">
-              {/* Progress Ring Preview - 使用 View + CSS conic-gradient 实现（小程序不支持SVG） */}
+              {/* Progress Ring Preview - 使用 View + CSS 实现圆环（小程序不支持 SVG） */}
               <View className="relative flex items-center justify-center" style={{ width: 60, height: 60 }}>
                 {/* 背景圆环 */}
                 <View style={{ position: 'absolute', width: 60, height: 60, borderRadius: 30, backgroundColor: '#E5E7EB' }} />
-                {/* 进度圆环 - 使用 conic-gradient */}
+                {/* 彩色圆环边框 */}
                 <View style={{ 
                   position: 'absolute', 
                   width: 60, 
                   height: 60, 
                   borderRadius: 30, 
-                  background: `conic-gradient(from -90deg, ${selectedThemeData.primary} 0%, ${selectedThemeData.secondary} 65%, transparent 65%, transparent 100%)` 
+                  borderWidth: 4,
+                  borderStyle: 'solid',
+                  borderColor: selectedThemeData.primary
                 }} />
                 {/* 内部白色圆 */}
                 <View style={{ 
                   position: 'absolute', 
-                  left: 4, 
-                  top: 4, 
                   width: 52, 
                   height: 52, 
                   borderRadius: 26, 

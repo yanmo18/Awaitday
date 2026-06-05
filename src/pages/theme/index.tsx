@@ -38,7 +38,7 @@ export default function StylePage() {
   const PreviewRing = () => {
     const size = 100
     const strokeWidth = 8
-    const progress = 0.7 // 70% 进度
+    const innerSize = size - strokeWidth * 2
     return (
       <View style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', height: '140px' }}>
         <View style={{ position: 'relative', width: size, height: size }}>
@@ -52,25 +52,25 @@ export default function StylePage() {
               backgroundColor: '#E2E8F0',
             }}
           />
-          {/* 进度圆环 */}
+          {/* 彩色圆环边框 */}
           <View
             style={{
               position: 'absolute',
               width: size,
               height: size,
               borderRadius: size / 2,
-              background: `conic-gradient(from -90deg, #6366F1 0%, #8B5CF6 ${progress * 100}%, transparent ${progress * 100}%, transparent 100%)`,
+              borderWidth: strokeWidth,
+              borderStyle: 'solid',
+              borderColor: '#6366F1',
             }}
           />
           {/* 内部白色圆 */}
           <View
             style={{
               position: 'absolute',
-              left: strokeWidth,
-              top: strokeWidth,
-              width: size - strokeWidth * 2,
-              height: size - strokeWidth * 2,
-              borderRadius: (size - strokeWidth * 2) / 2,
+              width: innerSize,
+              height: innerSize,
+              borderRadius: innerSize / 2,
               backgroundColor: '#FFFFFF',
               display: 'flex',
               alignItems: 'center',
