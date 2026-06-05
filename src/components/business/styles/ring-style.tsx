@@ -28,9 +28,9 @@ export function RingStyle({
     return `${date.getMonth() + 1}月${date.getDate()}日`
   }
 
-  const radius = 50
-  const circumference = 2 * Math.PI * radius
-  const strokeDashoffset = circumference * (1 - animatedProgress)
+  // 圆环尺寸
+  const size = 120
+  const strokeWidth = 8
 
   return (
     <View className="p-4 rounded-2xl" style={{ backgroundColor: primaryColor + '08' }}>
@@ -44,33 +44,49 @@ export function RingStyle({
 
       {/* Ring + Time */}
       <View className="flex items-center justify-between">
-        {/* Ring */}
-        <View className="relative">
-          <svg width="120" height="120" viewBox="0 0 120 120">
-            <defs>
-              <linearGradient id={`ring-grad-${primaryColor}`} x1="0%" y1="0%" x2="100%" y2="0%">
-                <stop offset="0%" stopColor={primaryColor} />
-                <stop offset="100%" stopColor={secondaryColor} />
-              </linearGradient>
-            </defs>
-            <circle cx="60" cy="60" r={radius} fill="none" stroke="#E5E7EB" strokeWidth="8" />
-            <circle
-              cx="60" cy="60" r={radius}
-              fill="none"
-              stroke={`url(#ring-grad-${primaryColor})`}
-              strokeWidth="8"
-              strokeLinecap="round"
-              strokeDasharray={circumference}
-              strokeDashoffset={strokeDashoffset}
-              style={{
-                transform: 'rotate(-90deg)',
-                transformOrigin: '50% 50%',
-                transition: 'stroke-dashoffset 1s ease-out'
-              }}
-            />
-          </svg>
-          {/* Center */}
-          <View className="absolute inset-0 flex flex-col items-center justify-center">
+        {/* Ring - 使用 View + CSS conic-gradient 实现 */}
+        <View 
+          className="relative flex items-center justify-center"
+          style={{
+            width: size,
+            height: size,
+          }}
+        >
+          {/* 背景圆环 */}
+          <View 
+            style={{
+              position: 'absolute',
+              width: size,
+              height: size,
+              borderRadius: size / 2,
+              backgroundColor: '#E5E7EB',
+            }}
+          />
+          {/* 进度圆环 - 使用 conic-gradient */}
+          <View 
+            style={{
+              position: 'absolute',
+              width: size,
+              height: size,
+              borderRadius: size / 2,
+              background: `conic-gradient(from -90deg, ${primaryColor} 0%, ${secondaryColor} ${animatedProgress * 100}%, transparent ${animatedProgress * 100}%)`,
+              transition: 'background 1s ease-out',
+            }}
+          />
+          {/* 内部白色圆 */}
+          <View 
+            style={{
+              position: 'absolute',
+              width: size - strokeWidth * 2,
+              height: size - strokeWidth * 2,
+              borderRadius: (size - strokeWidth * 2) / 2,
+              backgroundColor: '#FFFFFF',
+              display: 'flex',
+              flexDirection: 'column',
+              alignItems: 'center',
+              justifyContent: 'center',
+            }}
+          >
             <Text className="text-3xl font-bold" style={{ color: primaryColor }}>{days}</Text>
             <Text className="text-xs text-gray-500">天</Text>
           </View>

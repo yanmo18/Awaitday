@@ -34,26 +34,55 @@ export default function StylePage() {
     setSwiperCurrent(e.detail.current)
   }
 
-  // 预览组件
-  const PreviewRing = () => (
-    <View style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', height: '140px' }}>
-      <View style={{ position: 'relative', width: '100px', height: '100px' }}>
-        <svg width="100" height="100" viewBox="0 0 100 100" style={{ transform: 'rotate(-90deg)' }}>
-          <circle cx="50" cy="50" r="42" fill="none" stroke="#E2E8F0" strokeWidth="8" />
-          <circle cx="50" cy="50" r="42" fill="none" stroke="url(#ringGrad)" strokeWidth="8" strokeDasharray="198" strokeLinecap="round" />
-          <defs>
-            <linearGradient id="ringGrad" x1="0%" y1="0%" x2="100%" y2="100%">
-              <stop offset="0%" stopColor="#6366F1" />
-              <stop offset="100%" stopColor="#8B5CF6" />
-            </linearGradient>
-          </defs>
-        </svg>
-        <View style={{ position: 'absolute', top: 0, left: 0, right: 0, bottom: 0, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-          <Text style={{ fontSize: '28px', fontWeight: 'bold', color: '#6366F1' }}>07</Text>
+  // 预览组件 - 使用 View + CSS 实现圆环（小程序不支持 SVG）
+  const PreviewRing = () => {
+    const size = 100
+    const strokeWidth = 8
+    const progress = 0.7 // 70% 进度
+    return (
+      <View style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', height: '140px' }}>
+        <View style={{ position: 'relative', width: size, height: size }}>
+          {/* 背景圆环 */}
+          <View
+            style={{
+              position: 'absolute',
+              width: size,
+              height: size,
+              borderRadius: size / 2,
+              backgroundColor: '#E2E8F0',
+            }}
+          />
+          {/* 进度圆环 */}
+          <View
+            style={{
+              position: 'absolute',
+              width: size,
+              height: size,
+              borderRadius: size / 2,
+              background: `conic-gradient(from -90deg, #6366F1 0%, #8B5CF6 ${progress * 100}%, transparent ${progress * 100}%)`,
+            }}
+          />
+          {/* 内部白色圆 */}
+          <View
+            style={{
+              position: 'absolute',
+              left: strokeWidth,
+              top: strokeWidth,
+              width: size - strokeWidth * 2,
+              height: size - strokeWidth * 2,
+              borderRadius: (size - strokeWidth * 2) / 2,
+              backgroundColor: '#FFFFFF',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+            }}
+          >
+            <Text style={{ fontSize: '28px', fontWeight: 'bold', color: '#6366F1' }}>07</Text>
+          </View>
         </View>
       </View>
-    </View>
-  )
+    )
+  }
 
   const PreviewFlip = () => (
     <View style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', height: '140px', gap: '6px' }}>
