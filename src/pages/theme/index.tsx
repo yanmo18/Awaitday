@@ -59,7 +59,7 @@ export default function StylePage() {
               width: size,
               height: size,
               borderRadius: size / 2,
-              background: `conic-gradient(from -90deg, #6366F1 0%, #8B5CF6 ${progress * 100}%, transparent ${progress * 100}%)`,
+              background: `conic-gradient(from -90deg, #6366F1 0%, #8B5CF6 ${progress * 100}%, transparent ${progress * 100}%, transparent 100%)`,
             }}
           />
           {/* 内部白色圆 */}

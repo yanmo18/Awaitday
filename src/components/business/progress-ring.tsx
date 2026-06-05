@@ -46,7 +46,7 @@ export function ProgressRing({
             width: size,
             height: size,
             borderRadius: size / 2,
-            background: `conic-gradient(from -90deg, ${primaryColor} 0%, ${secondaryColor} ${animatedProgress * 100}%, transparent ${animatedProgress * 100}%)`,
+            background: `conic-gradient(from -90deg, ${primaryColor} 0%, ${secondaryColor} ${animatedProgress * 100}%, transparent ${animatedProgress * 100}%, transparent 100%)`,
             transition: 'background 1s ease-out',
           }}
         />

@@ -275,7 +275,7 @@ export default function AddPage() {
                   width: 60, 
                   height: 60, 
                   borderRadius: 30, 
-                  background: `conic-gradient(from -90deg, ${selectedThemeData.primary} 0%, ${selectedThemeData.secondary} ${65}%, transparent ${65}%)` 
+                  background: `conic-gradient(from -90deg, ${selectedThemeData.primary} 0%, ${selectedThemeData.secondary} 65%, transparent 65%, transparent 100%)` 
                 }} />
                 {/* 内部白色圆 */}
                 <View style={{ 
