@@ -10,16 +10,18 @@ interface RingStyleProps {
   secondaryColor: string
   name: string
   targetDate: string
-  progress: number
+  progress?: number
 }
 
 export function RingStyle({ 
-  days, hours, minutes, seconds, primaryColor, secondaryColor, name, targetDate, progress 
+  days, hours, minutes, seconds, primaryColor, secondaryColor, name, targetDate, progress = 0.7
 }: RingStyleProps) {
   const [animatedProgress, setAnimatedProgress] = useState(0)
-  
+
   useEffect(() => {
-    const timer = setTimeout(() => setAnimatedProgress(progress), 100)
+    const timer = setTimeout(() => {
+      setAnimatedProgress(progress)
+    }, 100)
     return () => clearTimeout(timer)
   }, [progress])
 
@@ -28,14 +30,12 @@ export function RingStyle({
     return `${date.getMonth() + 1}月${date.getDate()}日`
   }
 
-  // 圆环尺寸
   const size = 120
   const strokeWidth = 8
   const innerSize = size - strokeWidth * 2
 
   return (
     <View className="p-4 rounded-2xl" style={{ backgroundColor: primaryColor + '08' }}>
-      {/* Header */}
       <View className="flex items-center justify-between mb-2">
         <View>
           <Text className="block text-lg font-bold" style={{ color: primaryColor }}>{name}</Text>
@@ -43,9 +43,8 @@ export function RingStyle({
         </View>
       </View>
 
-      {/* Ring + Time */}
       <View className="flex items-center justify-between">
-        {/* Ring - 使用多个 View 模拟圆环 */}
+        {/* Ring - 使用 border 模拟圆环 */}
         <View 
           className="relative flex items-center justify-center"
           style={{
@@ -101,7 +100,6 @@ export function RingStyle({
           </View>
         </View>
 
-        {/* Time */}
         <View className="flex-1 ml-4">
           <View className="flex items-center justify-end gap-2 mb-2">
             <TimeBlock value={hours} label="时" color={primaryColor} />
@@ -121,7 +119,7 @@ function TimeBlock({ value, label, color }: { value: number; label: string; colo
   return (
     <View className="text-center">
       <Text className="text-xl font-bold" style={{ color }}>{str}</Text>
-      <Text className="block text-xs text-gray-400">{label}</Text>
+      <Text className="text-xs text-gray-400">{label}</Text>
     </View>
   )
 }

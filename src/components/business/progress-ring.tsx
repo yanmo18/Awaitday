@@ -1,73 +1,69 @@
-import { View } from '@tarojs/components'
-import { useEffect, useState } from 'react'
+import { View, Text } from '@tarojs/components'
 
 interface ProgressRingProps {
-  progress: number
+  progress?: number // 0-1
   size?: number
   strokeWidth?: number
-  primaryColor?: string
-  secondaryColor?: string
+  color?: string
+  days?: number
 }
 
 export function ProgressRing({
-  progress,
-  size = 100,
-  strokeWidth = 6,
-  primaryColor = '#6366F1',
-  secondaryColor = '#8B5CF6'
+  progress = 0.7,
+  size = 120,
+  strokeWidth = 8,
+  color = '#6366F1',
+  days = 0
 }: ProgressRingProps) {
-  const [animatedProgress, setAnimatedProgress] = useState(0)
-  
-  useEffect(() => {
-    // 进度动画
-    const timer = setTimeout(() => {
-      setAnimatedProgress(progress)
-    }, 100)
-    return () => clearTimeout(timer)
-  }, [progress])
-
-  const radius = (size - strokeWidth) / 2
-  const circumference = 2 * Math.PI * radius
-  const strokeDashoffset = circumference * (1 - animatedProgress)
+  const innerSize = size - strokeWidth * 2
+  const rotation = progress * 360 - 90
 
   return (
-    <View className="progress-ring-container" style={{ width: size, height: size }}>
-      <svg width={size} height={size} viewBox={`0 0 ${size} ${size}`}>
-        <defs>
-          <linearGradient id="progressGradient" x1="0%" y1="0%" x2="100%" y2="0%">
-            <stop offset="0%" stopColor={primaryColor} />
-            <stop offset="100%" stopColor={secondaryColor} />
-          </linearGradient>
-        </defs>
-        
+    <View className="flex items-center justify-center">
+      <View className="relative flex items-center justify-center" style={{ width: size, height: size }}>
         {/* 背景圆环 */}
-        <circle
-          cx={size / 2}
-          cy={size / 2}
-          r={radius}
-          fill="none"
-          stroke="#E5E7EB"
-          strokeWidth={strokeWidth}
-        />
-        
-        {/* 进度圆环 */}
-        <circle
-          cx={size / 2}
-          cy={size / 2}
-          r={radius}
-          fill="none"
-          stroke="url(#progressGradient)"
-          strokeWidth={strokeWidth}
-          strokeLinecap="round"
-          strokeDasharray={circumference}
-          strokeDashoffset={strokeDashoffset}
+        <View
           style={{
-            transform: 'rotate(-90deg)',
-            transformOrigin: '50% 50%',
-            transition: 'stroke-dashoffset 1s ease-out'
+            position: 'absolute',
+            width: size,
+            height: size,
+            borderRadius: size / 2,
+            backgroundColor: '#E5E7EB'
           }}
         />
-      </svg>
+        {/* 彩色圆环边框 */}
+        <View
+          style={{
+            position: 'absolute',
+            width: size,
+            height: size,
+            borderRadius: size / 2,
+            borderWidth: strokeWidth,
+            borderStyle: 'solid',
+            borderTopColor: color,
+            borderRightColor: progress > 0.25 ? color : 'transparent',
+            borderBottomColor: progress > 0.5 ? color : 'transparent',
+            borderLeftColor: progress > 0.75 ? color : 'transparent',
+            transform: `rotate(${rotation}deg)`
+          }}
+        />
+        {/* 内部白色圆 */}
+        <View
+          style={{
+            position: 'absolute',
+            width: innerSize,
+            height: innerSize,
+            borderRadius: innerSize / 2,
+            backgroundColor: '#FFFFFF',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            zIndex: 10
+          }}
+        >
+          <Text style={{ fontSize: '32px', fontWeight: 'bold', color }}>{days}</Text>
+        </View>
+      </View>
     </View>
   )
 }

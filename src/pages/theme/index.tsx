@@ -233,7 +233,7 @@ export default function StylePage() {
 
       <View className="mt-6 p-4 bg-indigo-50 rounded-xl">
         <Text className="block text-sm text-indigo-600 font-medium mb-2">提示</Text>
-        <Text className="block text-sm text-slate-600">左右滑动预览不同样式，点击「应用此样式」保存设置。颜色可在添加倒计时时自定义。</Text>
+        <Text className="block text-sm text-indigo-500">左右滑动可以预览不同样式，点击「应用此样式」保存设置。</Text>
       </View>
     </View>
   )
