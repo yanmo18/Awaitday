@@ -265,30 +265,32 @@ export default function AddPage() {
           <CardContent className="p-4">
             <Text className="block text-sm text-gray-500 mb-3">效果预览</Text>
             <View className="flex items-center gap-4">
-              {/* Progress Ring Preview */}
-              <svg width="60" height="60" viewBox="0 0 60 60">
-                <defs>
-                  <linearGradient id="preview-gradient" x1="0%" y1="0%" x2="100%" y2="0%">
-                    <stop offset="0%" stopColor={selectedThemeData.primary} />
-                    <stop offset="100%" stopColor={selectedThemeData.secondary} />
-                  </linearGradient>
-                </defs>
-                <circle cx="30" cy="30" r="26" fill="none" stroke="#E5E7EB" strokeWidth="4" />
-                <circle
-                  cx="30"
-                  cy="30"
-                  r="26"
-                  fill="none"
-                  stroke="url(#preview-gradient)"
-                  strokeWidth="4"
-                  strokeLinecap="round"
-                  strokeDasharray={`${0.65 * 2 * Math.PI * 26} ${2 * Math.PI * 26}`}
-                  transform="rotate(-90 30 30)"
-                />
-                <text x="30" y="34" textAnchor="middle" fill={selectedThemeData.primary} fontSize="16" fontWeight="bold">
-                  07
-                </text>
-              </svg>
+              {/* Progress Ring Preview - 使用 View + CSS conic-gradient 实现（小程序不支持SVG） */}
+              <View className="relative flex items-center justify-center" style={{ width: 60, height: 60 }}>
+                {/* 背景圆环 */}
+                <View style={{ position: 'absolute', width: 60, height: 60, borderRadius: 30, backgroundColor: '#E5E7EB' }} />
+                {/* 进度圆环 - 使用 conic-gradient */}
+                <View style={{ 
+                  position: 'absolute', 
+                  width: 60, 
+                  height: 60, 
+                  borderRadius: 30, 
+                  background: `conic-gradient(from -90deg, ${selectedThemeData.primary} 0%, ${selectedThemeData.secondary} ${65}%, transparent ${65}%)` 
+                }} />
+                {/* 内部白色圆 */}
+                <View style={{ 
+                  position: 'absolute', 
+                  width: 52, 
+                  height: 52, 
+                  borderRadius: 26, 
+                  backgroundColor: '#FFFFFF',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center'
+                }}>
+                  <Text className="text-base font-bold" style={{ color: selectedThemeData.primary }}>07</Text>
+                </View>
+              </View>
               
               {/* Flip Card Preview */}
               <View className="flex gap-1">

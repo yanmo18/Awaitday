@@ -19,55 +19,48 @@ export function ProgressRing({
   const [animatedProgress, setAnimatedProgress] = useState(0)
   
   useEffect(() => {
-    // 进度动画
     const timer = setTimeout(() => {
       setAnimatedProgress(progress)
     }, 100)
     return () => clearTimeout(timer)
   }, [progress])
 
-  const radius = (size - strokeWidth) / 2
-  const circumference = 2 * Math.PI * radius
-  const strokeDashoffset = circumference * (1 - animatedProgress)
-
   return (
     <View className="progress-ring-container" style={{ width: size, height: size }}>
-      <svg width={size} height={size} viewBox={`0 0 ${size} ${size}`}>
-        <defs>
-          <linearGradient id="progressGradient" x1="0%" y1="0%" x2="100%" y2="0%">
-            <stop offset="0%" stopColor={primaryColor} />
-            <stop offset="100%" stopColor={secondaryColor} />
-          </linearGradient>
-        </defs>
-        
+      {/* 使用 View + CSS conic-gradient 实现圆环（小程序不支持SVG） */}
+      <View className="relative flex items-center justify-center" style={{ width: size, height: size }}>
         {/* 背景圆环 */}
-        <circle
-          cx={size / 2}
-          cy={size / 2}
-          r={radius}
-          fill="none"
-          stroke="#E5E7EB"
-          strokeWidth={strokeWidth}
-        />
-        
-        {/* 进度圆环 */}
-        <circle
-          cx={size / 2}
-          cy={size / 2}
-          r={radius}
-          fill="none"
-          stroke="url(#progressGradient)"
-          strokeWidth={strokeWidth}
-          strokeLinecap="round"
-          strokeDasharray={circumference}
-          strokeDashoffset={strokeDashoffset}
+        <View 
           style={{
-            transform: 'rotate(-90deg)',
-            transformOrigin: '50% 50%',
-            transition: 'stroke-dashoffset 1s ease-out'
+            position: 'absolute',
+            width: size,
+            height: size,
+            borderRadius: size / 2,
+            backgroundColor: '#E5E7EB',
           }}
         />
-      </svg>
+        {/* 进度圆环 - 使用 conic-gradient */}
+        <View 
+          style={{
+            position: 'absolute',
+            width: size,
+            height: size,
+            borderRadius: size / 2,
+            background: `conic-gradient(from -90deg, ${primaryColor} 0%, ${secondaryColor} ${animatedProgress * 100}%, transparent ${animatedProgress * 100}%)`,
+            transition: 'background 1s ease-out',
+          }}
+        />
+        {/* 内部白色圆 */}
+        <View 
+          style={{
+            position: 'absolute',
+            width: size - strokeWidth * 2,
+            height: size - strokeWidth * 2,
+            borderRadius: (size - strokeWidth * 2) / 2,
+            backgroundColor: '#FFFFFF',
+          }}
+        />
+      </View>
     </View>
   )
 }
