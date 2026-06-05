@@ -34,10 +34,11 @@ export default function StylePage() {
     setSwiperCurrent(e.detail.current)
   }
 
-  // 预览组件 - 使用 View + CSS 实现圆环（小程序不支持 SVG）
+  // 预览组件 - 使用 View + border 实现圆环（小程序兼容）
   const PreviewRing = () => {
     const size = 100
     const strokeWidth = 8
+    const innerSize = size - strokeWidth * 2
     const progress = 0.7 // 70% 进度
     return (
       <View style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', height: '140px' }}>
@@ -49,17 +50,25 @@ export default function StylePage() {
               width: size,
               height: size,
               borderRadius: size / 2,
-              backgroundColor: '#E2E8F0',
+              borderWidth: strokeWidth,
+              borderStyle: 'solid',
+              borderColor: '#E2E8F0',
             }}
           />
-          {/* 进度圆环 */}
+          {/* 进度圆环 - 使用 border 模拟 */}
           <View
             style={{
               position: 'absolute',
               width: size,
               height: size,
               borderRadius: size / 2,
-              background: `conic-gradient(from -90deg, #6366F1 0%, #8B5CF6 ${progress * 100}%, transparent ${progress * 100}%)`,
+              borderWidth: strokeWidth,
+              borderStyle: 'solid',
+              borderTopColor: '#6366F1',
+              borderRightColor: progress > 0.25 ? '#6366F1' : 'transparent',
+              borderBottomColor: progress > 0.5 ? '#8B5CF6' : 'transparent',
+              borderLeftColor: progress > 0.75 ? '#8B5CF6' : 'transparent',
+              transform: `rotate(${progress * 360 - 90}deg)`,
             }}
           />
           {/* 内部白色圆 */}
@@ -68,13 +77,14 @@ export default function StylePage() {
               position: 'absolute',
               left: strokeWidth,
               top: strokeWidth,
-              width: size - strokeWidth * 2,
-              height: size - strokeWidth * 2,
-              borderRadius: (size - strokeWidth * 2) / 2,
+              width: innerSize,
+              height: innerSize,
+              borderRadius: innerSize / 2,
               backgroundColor: '#FFFFFF',
               display: 'flex',
               alignItems: 'center',
               justifyContent: 'center',
+              zIndex: 10,
             }}
           >
             <Text style={{ fontSize: '28px', fontWeight: 'bold', color: '#6366F1' }}>07</Text>

@@ -31,6 +31,7 @@ export function RingStyle({
   // 圆环尺寸
   const size = 120
   const strokeWidth = 8
+  const innerSize = size - strokeWidth * 2
 
   return (
     <View className="p-4 rounded-2xl" style={{ backgroundColor: primaryColor + '08' }}>
@@ -44,7 +45,7 @@ export function RingStyle({
 
       {/* Ring + Time */}
       <View className="flex items-center justify-between">
-        {/* Ring - 使用 View + CSS conic-gradient 实现 */}
+        {/* Ring - 使用多个 View 模拟圆环 */}
         <View 
           className="relative flex items-center justify-center"
           style={{
@@ -59,32 +60,40 @@ export function RingStyle({
               width: size,
               height: size,
               borderRadius: size / 2,
-              backgroundColor: '#E5E7EB',
+              borderWidth: strokeWidth,
+              borderStyle: 'solid',
+              borderColor: '#E5E7EB',
             }}
           />
-          {/* 进度圆环 - 使用 conic-gradient */}
+          {/* 进度圆环 - 使用 border 模拟 */}
           <View 
             style={{
               position: 'absolute',
               width: size,
               height: size,
               borderRadius: size / 2,
-              background: `conic-gradient(from -90deg, ${primaryColor} 0%, ${secondaryColor} ${animatedProgress * 100}%, transparent ${animatedProgress * 100}%)`,
-              transition: 'background 1s ease-out',
+              borderWidth: strokeWidth,
+              borderStyle: 'solid',
+              borderTopColor: primaryColor,
+              borderRightColor: animatedProgress > 0.25 ? primaryColor : 'transparent',
+              borderBottomColor: animatedProgress > 0.5 ? secondaryColor : 'transparent',
+              borderLeftColor: animatedProgress > 0.75 ? secondaryColor : 'transparent',
+              transform: `rotate(${animatedProgress * 360 - 90}deg)`,
             }}
           />
           {/* 内部白色圆 */}
           <View 
             style={{
               position: 'absolute',
-              width: size - strokeWidth * 2,
-              height: size - strokeWidth * 2,
-              borderRadius: (size - strokeWidth * 2) / 2,
+              width: innerSize,
+              height: innerSize,
+              borderRadius: innerSize / 2,
               backgroundColor: '#FFFFFF',
               display: 'flex',
               flexDirection: 'column',
               alignItems: 'center',
               justifyContent: 'center',
+              zIndex: 10,
             }}
           >
             <Text className="text-3xl font-bold" style={{ color: primaryColor }}>{days}</Text>
