@@ -29,6 +29,7 @@ interface TimeRemaining {
   minutes: number
   seconds: number
   total: number
+  totalDays: number
 }
 
 const defaultColors = {
@@ -48,7 +49,21 @@ function calculateTimeRemaining(targetDate: string): TimeRemaining {
   const minutes = Math.floor((total % (1000 * 60 * 60)) / (1000 * 60))
   const seconds = Math.floor((total % (1000 * 60)) / 1000)
   
-  return { days, hours, minutes, seconds, total }
+  return { days, hours, minutes, seconds, total, totalDays: 0 }
+}
+
+function calculateProgress(createdAt: string, targetDate: string): number {
+  const created = new Date(createdAt).getTime()
+  const target = new Date(targetDate).getTime()
+  const now = Date.now()
+  
+  const totalDuration = target - created
+  const elapsed = now - created
+  
+  if (totalDuration <= 0) return 1
+  if (elapsed <= 0) return 0
+  
+  return Math.min(1, Math.max(0, elapsed / totalDuration))
 }
 
 function CountdownCard({ 
@@ -134,7 +149,7 @@ function CountdownCard({
             secondaryColor={colors.secondary}
             name={countdown.name}
             targetDate={countdown.targetDate}
-            progress={0.65}
+            progress={calculateProgress(countdown.createdAt, countdown.targetDate)}
           />
         )
     }
