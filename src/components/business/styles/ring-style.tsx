@@ -135,6 +135,10 @@ function getGradientColor(color1: string, color2: string, ratio: number): string
   const g2 = parseInt(hex2.substring(2, 4), 16)
   const b2 = parseInt(hex2.substring(4, 6), 16)
   
+  if (isNaN(r1) || isNaN(g1) || isNaN(b1) || isNaN(r2) || isNaN(g2) || isNaN(b2)) {
+    return ratio < 0.5 ? color1 : color2
+  }
+  
   const r = Math.round(r1 * (1 - ratio) + r2 * ratio)
   const g = Math.round(g1 * (1 - ratio) + g2 * ratio)
   const b = Math.round(b1 * (1 - ratio) + b2 * ratio)
