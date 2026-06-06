@@ -33,6 +33,14 @@ export function RingStyle({
   const size = 120
   const strokeWidth = 8
   const innerSize = size - strokeWidth * 2
+  const segments = 24
+
+  const getSegmentColor = (index: number) => {
+    const totalProgress = animatedProgress * segments
+    if (index >= totalProgress) return 'transparent'
+    const ratio = index / (segments - 1)
+    return getGradientColor(primaryColor, secondaryColor, ratio)
+  }
 
   return (
     <View className="p-4 rounded-2xl" style={{ backgroundColor: primaryColor + '08' }}>
@@ -44,7 +52,7 @@ export function RingStyle({
       </View>
 
       <View className="flex items-center justify-between">
-        {/* Ring - 使用渐变背景模拟圆环 */}
+        {/* Ring - 使用多个扇形段实现平滑渐变圆环 */}
         <View 
           className="relative flex items-center justify-center"
           style={{
@@ -64,18 +72,23 @@ export function RingStyle({
               borderColor: '#E5E7EB',
             }}
           />
-          {/* 进度圆环 - 渐变效果 */}
-          <View 
-            style={{
-              position: 'absolute',
-              width: size,
-              height: size,
-              borderRadius: size / 2,
-              background: `conic-gradient(from -90deg, ${primaryColor} ${animatedProgress * 180}deg, ${secondaryColor} ${animatedProgress * 180}deg ${animatedProgress * 360}deg, transparent ${animatedProgress * 360}deg)`,
-              mask: `radial-gradient(transparent 55%, black 56%)`,
-              WebkitMask: `radial-gradient(transparent 55%, black 56%)`,
-            }}
-          />
+          {/* 渐变进度圆环 - 由多个扇形段组成 */}
+          {Array.from({ length: segments }).map((_, i) => (
+            <View
+              key={i}
+              style={{
+                position: 'absolute',
+                width: size,
+                height: size,
+                borderRadius: size / 2,
+                borderWidth: strokeWidth,
+                borderStyle: 'solid',
+                borderColor: 'transparent',
+                borderTopColor: getSegmentColor(i),
+                transform: `rotate(${i * (360 / segments) - 90}deg)`,
+              }}
+            />
+          ))}
           {/* 内部白色圆 */}
           <View 
             style={{
@@ -108,6 +121,25 @@ export function RingStyle({
       </View>
     </View>
   )
+}
+
+function getGradientColor(color1: string, color2: string, ratio: number): string {
+  const hex1 = color1.replace('#', '')
+  const hex2 = color2.replace('#', '')
+  
+  const r1 = parseInt(hex1.substring(0, 2), 16)
+  const g1 = parseInt(hex1.substring(2, 4), 16)
+  const b1 = parseInt(hex1.substring(4, 6), 16)
+  
+  const r2 = parseInt(hex2.substring(0, 2), 16)
+  const g2 = parseInt(hex2.substring(2, 4), 16)
+  const b2 = parseInt(hex2.substring(4, 6), 16)
+  
+  const r = Math.round(r1 * (1 - ratio) + r2 * ratio)
+  const g = Math.round(g1 * (1 - ratio) + g2 * ratio)
+  const b = Math.round(b1 * (1 - ratio) + b2 * ratio)
+  
+  return `#${r.toString(16).padStart(2, '0')}${g.toString(16).padStart(2, '0')}${b.toString(16).padStart(2, '0')}`
 }
 
 function TimeBlock({ value, label, color }: { value: number; label: string; color: string }) {
