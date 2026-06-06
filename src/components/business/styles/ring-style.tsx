@@ -44,7 +44,7 @@ export function RingStyle({
       </View>
 
       <View className="flex items-center justify-between">
-        {/* Ring - 使用 border 模拟圆环 */}
+        {/* Ring - 使用渐变背景模拟圆环 */}
         <View 
           className="relative flex items-center justify-center"
           style={{
@@ -64,20 +64,16 @@ export function RingStyle({
               borderColor: '#E5E7EB',
             }}
           />
-          {/* 进度圆环 - 使用 border 模拟 */}
+          {/* 进度圆环 - 渐变效果 */}
           <View 
             style={{
               position: 'absolute',
               width: size,
               height: size,
               borderRadius: size / 2,
-              borderWidth: strokeWidth,
-              borderStyle: 'solid',
-              borderTopColor: primaryColor,
-              borderRightColor: animatedProgress > 0.25 ? primaryColor : 'transparent',
-              borderBottomColor: animatedProgress > 0.5 ? secondaryColor : 'transparent',
-              borderLeftColor: animatedProgress > 0.75 ? secondaryColor : 'transparent',
-              transform: `rotate(${animatedProgress * 360 - 90}deg)`,
+              background: `conic-gradient(from -90deg, ${primaryColor} ${animatedProgress * 180}deg, ${secondaryColor} ${animatedProgress * 180}deg ${animatedProgress * 360}deg, transparent ${animatedProgress * 360}deg)`,
+              mask: `radial-gradient(transparent 55%, black 56%)`,
+              WebkitMask: `radial-gradient(transparent 55%, black 56%)`,
             }}
           />
           {/* 内部白色圆 */}
